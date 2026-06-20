@@ -14,6 +14,12 @@
           <span v-if="hasTransactions" class="tx-count">{{ transactionCount }}</span>
         </RouterLink>
         <RouterLink to="/upload" class="nav-link">Upload</RouterLink>
+
+        <span class="sync-indicator" :class="syncStatus" :title="syncLabel">
+          <span v-if="syncStatus === 'syncing'" class="spin">↻</span>
+          <span v-else-if="syncStatus === 'synced'">✓</span>
+          <span v-else-if="syncStatus === 'error'">⚠</span>
+        </span>
       </div>
     </div>
   </nav>
@@ -23,12 +29,20 @@
 import { computed } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useTransactionStore } from '../composables/useTransactionStore.js'
+import { syncStatus } from '../lib/supabase.js'
 
 const router = useRouter()
 const store = useTransactionStore()
 
 const hasTransactions = computed(() => store.transactions.value.length > 0)
 const transactionCount = computed(() => store.transactions.value.length)
+
+const syncLabel = computed(() => ({
+  syncing: 'Syncing…',
+  synced:  'Saved to cloud',
+  error:   'Sync error',
+  idle:    '',
+}[syncStatus.value] ?? ''))
 </script>
 
 <style scoped>
@@ -61,6 +75,7 @@ const transactionCount = computed(() => store.transactions.value.length)
 
 .nav-links {
   display: flex;
+  align-items: center;
   gap: 4px;
 }
 
@@ -103,4 +118,28 @@ const transactionCount = computed(() => store.transactions.value.length)
   border-radius: 99px;
   line-height: 1.6;
 }
+
+.sync-indicator {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 50%;
+  margin-left: 4px;
+  transition: color .2s;
+}
+
+.sync-indicator.syncing { color: var(--text-muted); }
+.sync-indicator.synced  { color: var(--green); }
+.sync-indicator.error   { color: var(--accent); }
+.sync-indicator.idle    { display: none; }
+
+.spin {
+  display: inline-block;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>

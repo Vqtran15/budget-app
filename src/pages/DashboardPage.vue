@@ -32,7 +32,7 @@
       v-if="grouped['Uncategorized']?.length"
       category="Uncategorized"
       :transactions="grouped['Uncategorized']"
-      :all-categories="allCategories"
+      :all-categories="allCategoriesComputed"
       :selected-ids="selectedIds"
       @update-category="updateCategory"
       @remove="removeTransaction"
@@ -45,7 +45,7 @@
       :key="cat"
       :category="cat"
       :transactions="grouped[cat]"
-      :all-categories="allCategories"
+      :all-categories="allCategoriesComputed"
       :selected-ids="selectedIds"
       @update-category="updateCategory"
       @remove="removeTransaction"
@@ -53,9 +53,19 @@
       @toggle-select-all="toggleSelectAll"
     />
 
+    <button class="btn-new-cat" @click="showNewCategory = true">
+      + New Category
+    </button>
+
+    <NewCategoryModal
+      v-if="showNewCategory"
+      @close="showNewCategory = false"
+      @created="showNewCategory = false"
+    />
+
     <BulkActionBar
       :count="selectedIds.size"
-      :all-categories="allCategories"
+      :all-categories="allCategoriesComputed"
       @move="moveSelected"
       @delete="deleteSelected"
       @clear="clearSelection"
@@ -73,17 +83,22 @@ import ChartBar          from '../components/ChartBar.vue'
 import SearchFilter      from '../components/SearchFilter.vue'
 import CategorySection   from '../components/CategorySection.vue'
 import BulkActionBar     from '../components/BulkActionBar.vue'
+import NewCategoryModal  from '../components/NewCategoryModal.vue'
 import { useCategorizer }          from '../composables/useCategorizer.js'
 import { useMerchantMemory }       from '../composables/useMerchantMemory.js'
 import { useTransactionFilter }    from '../composables/useTransactionFilter.js'
 import { useTransactionStore }     from '../composables/useTransactionStore.js'
+import { useCustomCategories }     from '../composables/useCustomCategories.js'
 import { ALL_CATEGORIES, CATEGORIES } from '../utils/categories.js'
 
 const router = useRouter()
 const store  = useTransactionStore()
 const { recategorize }  = useCategorizer()
 const { learn }         = useMerchantMemory()
-const allCategories     = ALL_CATEGORIES
+const { customCategoryNames } = useCustomCategories()
+
+const showNewCategory = ref(false)
+const allCategoriesComputed = computed(() => [...ALL_CATEGORIES, ...customCategoryNames.value])
 
 onMounted(() => {
   if (!store.transactions.value.length) router.replace('/upload')
@@ -95,13 +110,16 @@ const { search, dateFrom, dateTo, hasFilters, filtered, clear: clearFilters } = 
 // --- Grouping ---
 const grouped = computed(() => {
   const result = {}
-  for (const cat of allCategories) result[cat] = []
-  for (const tx of filtered.value) result[tx.category]?.push(tx)
+  for (const cat of allCategoriesComputed.value) result[cat] = []
+  for (const tx of filtered.value) {
+    if (result[tx.category] !== undefined) result[tx.category].push(tx)
+    else result[CATEGORIES.UNCATEGORIZED].push(tx)
+  }
   return result
 })
 
 const sortedCategories = computed(() =>
-  allCategories
+  allCategoriesComputed.value
     .filter(cat => cat !== CATEGORIES.UNCATEGORIZED && grouped.value[cat]?.length > 0)
     .sort((a, b) => {
       const sumA = grouped.value[a].reduce((s, t) => s + Math.abs(t.amount), 0)
@@ -158,6 +176,27 @@ function removeTransaction(id) {
 <style scoped>
 .dashboard { padding-bottom: 80px; }
 
+.btn-new-cat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px auto 0;
+  padding: 9px 20px;
+  border-radius: 10px;
+  border: 1.5px dashed var(--border);
+  background: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.btn-new-cat:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
 .dash-header { margin-bottom: 28px; }
 
 .dash-title {
@@ -183,8 +222,8 @@ function removeTransaction(id) {
   padding: 2px 10px;
   border-radius: 99px;
 }
-.badge.warn { background: var(--yellow-light); color: #92400e; }
-.badge.ai   { background: #ede9fe; color: #6d28d9; }
+.badge.warn { background: var(--yellow-light); color: #8b6914; }
+.badge.ai   { background: var(--accent-light); color: var(--accent-hover); }
 
 .charts-grid {
   display: grid;

@@ -105,13 +105,13 @@ function onInputChange(e) {
   border-radius: 99px;
   background: var(--accent-light);
   color: var(--accent);
-  border: 1px solid #c7d7fe;
+  border: 1px solid var(--border);
 }
 
 .tag-csv {
-  background: #dcfce7;
-  color: #15803d;
-  border-color: #bbf7d0;
+  background: var(--green-light);
+  color: #5a9178;
+  border-color: #b5d8cb;
 }
 
 .drop-hint { font-size: 12px; color: var(--text-xs); }
@@ -126,7 +126,7 @@ function onInputChange(e) {
 }
 
 .loading { background: var(--accent-light); color: var(--accent); }
-.error   { background: #fee2e2; color: #b91c1c; }
+.error   { background: var(--red-light); color: #e11d48; }
 
 .spinner {
   display: inline-block;

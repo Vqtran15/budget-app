@@ -68,7 +68,7 @@ function fmt(iso) {
   border-radius: 4px;
   transition: color .15s;
 }
-.btn-clear:hover { color: #b91c1c; }
+.btn-clear:hover { color: var(--red); }
 
 .history-list {
   list-style: none;
@@ -118,8 +118,8 @@ function fmt(iso) {
 }
 
 .tag-ai {
-  background: #ede9fe;
-  color: #6d28d9;
+  background: var(--accent-light);
+  color: var(--accent);
   font-size: 11px;
   font-weight: 600;
   padding: 1px 6px;
@@ -144,7 +144,7 @@ function fmt(iso) {
   cursor: pointer;
   transition: background .15s;
 }
-.btn-load:hover { background: #4f46e5; }
+.btn-load:hover { background: var(--accent-hover); }
 
 .btn-delete {
   padding: 5px 7px;
@@ -157,5 +157,5 @@ function fmt(iso) {
   line-height: 1;
   transition: color .15s, border-color .15s, background .15s;
 }
-.btn-delete:hover { color: #b91c1c; border-color: #fca5a5; background: #fee2e2; }
+.btn-delete:hover { color: var(--accent-hover); border-color: var(--accent); background: var(--red-light); }
 </style>

@@ -10,7 +10,9 @@
           @click.stop
           @change.stop="toggleAll"
         />
-        <span class="cat-icon">{{ meta.icon }}</span>
+        <span class="cat-icon">
+          <CategoryIcon :name="meta.icon" :size="18" :color="meta.color" />
+        </span>
         <span class="cat-name">{{ category }}</span>
         <span class="cat-count">{{ transactions.length }}</span>
         <span v-if="category === 'Uncategorized'" class="review-badge">Review needed</span>
@@ -39,7 +41,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { CATEGORY_META, CATEGORIES } from '../utils/categories.js'
+import { useCustomCategories } from '../composables/useCustomCategories.js'
 import TransactionCard from './TransactionCard.vue'
+import CategoryIcon from './CategoryIcon.vue'
 
 const props = defineProps({
   category:      { type: String, required: true },
@@ -50,7 +54,12 @@ const props = defineProps({
 
 const emit = defineEmits(['update-category', 'remove', 'toggle-select', 'toggle-select-all'])
 
-const meta      = computed(() => CATEGORY_META[props.category] ?? { icon: '❓', color: '#94a3b8', bg: '#f1f5f9' })
+const { customMeta } = useCustomCategories()
+const meta = computed(() =>
+  CATEGORY_META[props.category] ??
+  customMeta.value[props.category] ??
+  { icon: 'HelpCircle', color: '#8faab8', bg: '#edede9' }
+)
 const collapsed = ref(true)
 
 const allSelected  = computed(() => props.transactions.length > 0 && props.transactions.every(tx => props.selectedIds.has(tx.id)))
@@ -122,7 +131,7 @@ const totalClass = computed(() => {
 .review-badge {
   font-size: 11px;
   background: var(--yellow-light);
-  color: #92400e;
+  color: #8b6914;
   padding: 2px 8px;
   border-radius: 99px;
   font-weight: 600;

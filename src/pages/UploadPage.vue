@@ -225,7 +225,7 @@ async function handleAiParse() {
   max-width: 520px;
   margin-top: 8px;
   background: var(--surface);
-  border: 1px solid #c4b5fd;
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 20px 24px;
   display: flex;
@@ -239,7 +239,7 @@ async function handleAiParse() {
   gap: 12px;
 }
 
-.ai-icon { font-size: 20px; color: #7c3aed; flex-shrink: 0; margin-top: 2px; }
+.ai-icon { font-size: 20px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
 .ai-title { font-size: 15px; font-weight: 700; color: var(--text); }
 .ai-sub   { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
 
@@ -257,14 +257,14 @@ async function handleAiParse() {
   min-width: 0;
 }
 
-.api-key-input:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px #ede9fe; }
+.api-key-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
 
 .btn-ai {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 9px 16px;
-  background: #7c3aed;
+  background: var(--accent);
   color: white;
   border: none;
   border-radius: 8px;
@@ -275,7 +275,7 @@ async function handleAiParse() {
   transition: background .15s;
 }
 
-.btn-ai:hover:not(:disabled) { background: #6d28d9; }
+.btn-ai:hover:not(:disabled) { background: var(--accent-hover); }
 .btn-ai:disabled { opacity: .5; cursor: not-allowed; }
 
 .spinner-sm {
@@ -290,15 +290,15 @@ async function handleAiParse() {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .ai-note { font-size: 12px; color: var(--text-xs); line-height: 1.5; }
-.ai-note a { color: #7c3aed; text-decoration: underline; }
-.ai-error { font-size: 13px; color: #b91c1c; background: #fee2e2; padding: 10px 14px; border-radius: 8px; }
+.ai-note a { color: var(--accent); text-decoration: underline; }
+.ai-error { font-size: 13px; color: var(--accent-hover); background: var(--red-light); padding: 10px 14px; border-radius: 8px; }
 
 .success-toast {
   width: 100%;
   max-width: 520px;
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background: var(--green-light);
+  color: #5a9178;
+  border: 1px solid #b5d8cb;
   border-radius: 10px;
   padding: 12px 16px;
   font-size: 14px;

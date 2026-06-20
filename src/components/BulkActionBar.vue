@@ -7,9 +7,7 @@
         <div class="move-wrap">
           <select v-model="moveTarget" class="cat-select">
             <option value="">Move to…</option>
-            <option v-for="cat in allCategories" :key="cat" :value="cat">
-              {{ meta[cat]?.icon }} {{ cat }}
-            </option>
+            <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
           </select>
           <button class="btn-move" :disabled="!moveTarget" @click="doMove">Apply</button>
         </div>
@@ -23,7 +21,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import { CATEGORY_META } from '../utils/categories.js'
 
 const props = defineProps({
   count:         { type: Number, required: true },
@@ -31,7 +28,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['move', 'delete', 'clear'])
-const meta = CATEGORY_META
 const moveTarget = ref('')
 
 function doMove() {
@@ -88,7 +84,7 @@ function doMove() {
   cursor: pointer;
 }
 
-.cat-select option { background: #1e293b; color: #fff; }
+.cat-select option { background: #3d405b; color: #fff; }
 
 .btn-move {
   padding: 6px 12px;
@@ -101,7 +97,7 @@ function doMove() {
   cursor: pointer;
   transition: background .15s;
 }
-.btn-move:hover:not(:disabled) { background: #4f46e5; }
+.btn-move:hover:not(:disabled) { background: var(--accent-hover); }
 .btn-move:disabled { opacity: .4; cursor: not-allowed; }
 
 .btn-delete {

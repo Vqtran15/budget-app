@@ -14,14 +14,15 @@
     <div class="tx-right">
       <span class="tx-amount">{{ tx.amount >= 0 ? '+' : '' }}{{ fmt(tx.amount) }}</span>
       <div class="tx-category-wrap">
+        <span class="cat-icon-pill" :style="{ background: currentMeta.bg, color: currentMeta.color }">
+          <CategoryIcon :name="currentMeta.icon" :size="12" :color="currentMeta.color" />
+        </span>
         <select
           class="category-select"
           :value="tx.category"
           @change="e => emit('update-category', tx.id, e.target.value)"
         >
-          <option v-for="cat in allCategories" :key="cat" :value="cat">
-            {{ meta[cat]?.icon }} {{ cat }}
-          </option>
+          <option v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</option>
         </select>
         <span v-if="tx.isManual" class="manual-badge" title="Manually categorized">✎</span>
       </div>
@@ -31,9 +32,17 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { CATEGORY_META } from '../utils/categories.js'
+import { useCustomCategories } from '../composables/useCustomCategories.js'
+import CategoryIcon from './CategoryIcon.vue'
 
-const meta = CATEGORY_META
+const { customMeta } = useCustomCategories()
+const currentMeta = computed(() =>
+  CATEGORY_META[props.tx.category] ??
+  customMeta.value[props.tx.category] ??
+  { icon: 'HelpCircle', color: '#8faab8', bg: '#edede9' }
+)
 
 const props = defineProps({
   tx:            { type: Object,  required: true },
@@ -60,8 +69,8 @@ function fmt(n) {
   transition: background .15s, border-color .15s;
 }
 
-.tx-card:hover { background: #f0f4ff; }
-.tx-card.selected { background: #eef2ff; border-color: var(--accent); }
+.tx-card:hover { background: var(--surface-hover); }
+.tx-card.selected { background: #fdf0ec; border-color: var(--accent); }
 
 .tx-checkbox {
   width: 15px;
@@ -106,7 +115,17 @@ function fmt(n) {
 .credit .tx-amount { color: var(--green); }
 .debit  .tx-amount { color: var(--red); }
 
-.tx-category-wrap { display: flex; align-items: center; gap: 4px; }
+.tx-category-wrap { display: flex; align-items: center; gap: 5px; }
+
+.cat-icon-pill {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
 
 .category-select {
   font-size: 11px;
@@ -136,5 +155,5 @@ function fmt(n) {
   transition: opacity .15s, color .15s, background .15s;
 }
 .tx-card:hover .btn-remove { opacity: 1; }
-.btn-remove:hover { color: #b91c1c; background: #fee2e2; }
+.btn-remove:hover { color: var(--accent-hover); background: var(--red-light); }
 </style>

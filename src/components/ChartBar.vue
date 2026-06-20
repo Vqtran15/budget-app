@@ -49,8 +49,8 @@ function buildChart() {
     data: {
       labels,
       datasets: [
-        { label: 'Income',   data: income,   backgroundColor: '#10b981', borderRadius: 4 },
-        { label: 'Expenses', data: expenses, backgroundColor: '#ef4444', borderRadius: 4 },
+        { label: 'Income',   data: income,   backgroundColor: '#81b29a', borderRadius: 4 },
+        { label: 'Expenses', data: expenses, backgroundColor: '#e07a5f', borderRadius: 4 },
       ],
     },
     options: {
@@ -69,7 +69,7 @@ function buildChart() {
       scales: {
         x: { grid: { display: false }, ticks: { font: { size: 11 } } },
         y: {
-          grid: { color: '#f1f5f9' },
+          grid: { color: '#e2ddc8' },
           ticks: {
             font: { size: 11 },
             callback: v => '$' + v.toLocaleString(),

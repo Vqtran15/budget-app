@@ -130,5 +130,5 @@ function clear() { emit('clear') }
   cursor: pointer;
   transition: color .15s, border-color .15s;
 }
-.btn-clear-all:hover { color: #b91c1c; border-color: #fca5a5; }
+.btn-clear-all:hover { color: var(--accent-hover); border-color: var(--accent); }
 </style>

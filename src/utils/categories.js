@@ -12,17 +12,39 @@ export const CATEGORIES = {
 }
 
 export const CATEGORY_META = {
-  [CATEGORIES.INCOME]:       { icon: '💰', color: '#10b981', bg: '#d1fae5' },
-  [CATEGORIES.HOUSING]:      { icon: '🏠', color: '#3b82f6', bg: '#dbeafe' },
-  [CATEGORIES.FOOD]:         { icon: '🍔', color: '#f59e0b', bg: '#fef3c7' },
-  [CATEGORIES.TRANSPORT]:    { icon: '🚗', color: '#8b5cf6', bg: '#ede9fe' },
-  [CATEGORIES.SHOPPING]:     { icon: '🛒', color: '#ec4899', bg: '#fce7f3' },
-  [CATEGORIES.ENTERTAINMENT]:{ icon: '🎬', color: '#ef4444', bg: '#fee2e2' },
-  [CATEGORIES.HEALTHCARE]:   { icon: '💊', color: '#14b8a6', bg: '#ccfbf1' },
-  [CATEGORIES.UTILITIES]:    { icon: '💡', color: '#eab308', bg: '#fef9c3' },
-  [CATEGORIES.TRANSFER]:     { icon: '↔️', color: '#64748b', bg: '#f1f5f9' },
-  [CATEGORIES.UNCATEGORIZED]:{ icon: '❓', color: '#94a3b8', bg: '#f1f5f9' },
+  [CATEGORIES.INCOME]:       { icon: 'TrendingUp',    color: '#43AA8B', bg: '#e2f5ef' },
+  [CATEGORIES.HOUSING]:      { icon: 'Home',          color: '#277DA1', bg: '#dceef7' },
+  [CATEGORIES.FOOD]:         { icon: 'Utensils',      color: '#F8961E', bg: '#fef2de' },
+  [CATEGORIES.TRANSPORT]:    { icon: 'Car',           color: '#577590', bg: '#e2eaf0' },
+  [CATEGORIES.SHOPPING]:     { icon: 'ShoppingCart',  color: '#F94144', bg: '#feecec' },
+  [CATEGORIES.ENTERTAINMENT]:{ icon: 'Film',          color: '#F3722C', bg: '#feeee5' },
+  [CATEGORIES.HEALTHCARE]:   { icon: 'Stethoscope',   color: '#4D908E', bg: '#e1f0ef' },
+  [CATEGORIES.UTILITIES]:    { icon: 'Zap',           color: '#F9C74F', bg: '#fef6dd' },
+  [CATEGORIES.TRANSFER]:     { icon: 'ArrowLeftRight',color: '#90BE6D', bg: '#edf6e4' },
+  [CATEGORIES.UNCATEGORIZED]:{ icon: 'HelpCircle',    color: '#8faab8', bg: '#edede9' },
 }
+
+export const ICON_OPTIONS = [
+  'TrendingUp','Home','Utensils','Car','ShoppingCart','Film',
+  'Stethoscope','Zap','ArrowLeftRight','Briefcase','GraduationCap',
+  'Plane','Gift','Music','Dumbbell','Coffee','Book','Wrench',
+  'Star','Wallet','Phone','Globe','Camera','Gamepad2',
+  'Bike','Train','Dog','Heart','Package','PiggyBank',
+  'Building2','ShoppingBag','Tv','Headphones','Scissors','Baby',
+]
+
+export const COLOR_PALETTE = [
+  { color: '#F94144', bg: '#feecec' },
+  { color: '#F3722C', bg: '#feeee5' },
+  { color: '#F8961E', bg: '#fef2de' },
+  { color: '#F9844A', bg: '#fef0e6' },
+  { color: '#F9C74F', bg: '#fef6dd' },
+  { color: '#90BE6D', bg: '#edf6e4' },
+  { color: '#43AA8B', bg: '#e2f5ef' },
+  { color: '#4D908E', bg: '#e1f0ef' },
+  { color: '#277DA1', bg: '#dceef7' },
+  { color: '#577590', bg: '#e2eaf0' },
+]
 
 export const CATEGORY_KEYWORDS = {
   [CATEGORIES.INCOME]: [
