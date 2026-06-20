@@ -1,7 +1,7 @@
 <template>
   <div class="upload-page">
     <div class="hero fade-up">
-      <h1 class="title">💳 Budget App</h1>
+      <h1 class="title"><BarChart3 :size="32" class="title-icon" /> Budget App</h1>
       <p class="sub">Import your bank statement — we'll categorize it automatically</p>
     </div>
 
@@ -13,7 +13,8 @@
 
     <Transition name="toast">
       <div v-if="successMsg" class="success-toast">
-        ✓ {{ successMsg }}
+        <CheckCircle2 :size="16" />
+        {{ successMsg }}
       </div>
     </Transition>
 
@@ -22,7 +23,7 @@
     <!-- AI parse fallback panel -->
     <div v-if="showAiPanel" class="ai-panel">
       <div class="ai-panel-header">
-        <span class="ai-icon">✦</span>
+        <Sparkles :size="18" class="ai-icon" />
         <div>
           <p class="ai-title">Try AI-powered parsing</p>
           <p class="ai-sub">Works with Capital One, Discover, Amex, and any other format</p>
@@ -54,13 +55,14 @@
         Your key is saved in your browser only and never sent to any server other than Anthropic.
       </p>
 
-      <div v-if="aiError" class="ai-error">⚠️ {{ aiError }}</div>
+      <div v-if="aiError" class="ai-error"><AlertTriangle :size="14" /> {{ aiError }}</div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { BarChart3, CheckCircle2, Sparkles, AlertTriangle } from 'lucide-vue-next'
 import PdfUploader from '../components/PdfUploader.vue'
 import UploadHistory from '../components/UploadHistory.vue'
 import { usePdfParser } from '../composables/usePdfParser.js'
@@ -207,11 +209,17 @@ async function handleAiParse() {
 }
 
 .title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   font-size: 32px;
   font-weight: 800;
   letter-spacing: -.02em;
   color: var(--text);
 }
+
+.title-icon { flex-shrink: 0; }
 
 .sub {
   color: var(--text-muted);
@@ -239,7 +247,7 @@ async function handleAiParse() {
   gap: 12px;
 }
 
-.ai-icon { font-size: 20px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+.ai-icon { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
 .ai-title { font-size: 15px; font-weight: 700; color: var(--text); }
 .ai-sub   { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
 
@@ -291,18 +299,21 @@ async function handleAiParse() {
 
 .ai-note { font-size: 12px; color: var(--text-xs); line-height: 1.5; }
 .ai-note a { color: var(--accent); text-decoration: underline; }
-.ai-error { font-size: 13px; color: var(--accent-hover); background: var(--red-light); padding: 10px 14px; border-radius: 8px; }
+.ai-error { font-size: 13px; color: var(--accent-hover); background: var(--red-light); padding: 10px 14px; border-radius: 8px; display: flex; align-items: center; gap: 6px; }
 
 .success-toast {
   width: 100%;
   max-width: 520px;
   background: var(--green-light);
-  color: #5a9178;
-  border: 1px solid #b5d8cb;
+  color: var(--green);
+  border: 1px solid var(--green);
   border-radius: 10px;
   padding: 12px 16px;
   font-size: 14px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .toast-enter-active { transition: opacity .3s, transform .3s; }

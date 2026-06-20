@@ -1,25 +1,25 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #edede9;
-  --surface: #f8f8f5;
-  --surface-hover: #e3e3de;
-  --border: #d8d8d3;
-  --text: #1e2d3d;
-  --text-muted: #577590;
-  --text-xs: #8faab8;
-  --accent: #F94144;
-  --accent-light: #feecec;
-  --accent-hover: #d63033;
-  --green: #43AA8B;
-  --green-light: #e2f5ef;
-  --red: #F94144;
-  --red-light: #feecec;
-  --yellow: #F9C74F;
-  --yellow-light: #fef6dd;
-  --radius: 12px;
-  --shadow: 0 1px 4px rgba(30,45,61,.1), 0 1px 2px rgba(30,45,61,.06);
-  --shadow-md: 0 4px 12px rgba(30,45,61,.1), 0 2px 4px rgba(30,45,61,.05);
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface-hover: #f9fafb;
+  --border: #e5e7eb;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --text-xs: #9ca3af;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --accent-hover: #1d4ed8;
+  --green: #16a34a;
+  --green-light: #dcfce7;
+  --red: #dc2626;
+  --red-light: #fee2e2;
+  --yellow: #d97706;
+  --yellow-light: #fef3c7;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.05);
 }
 
 body {

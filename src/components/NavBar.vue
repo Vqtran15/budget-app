@@ -1,7 +1,10 @@
 <template>
   <nav class="navbar">
     <div class="navbar-inner">
-      <RouterLink to="/upload" class="brand">💳 Budget App</RouterLink>
+      <RouterLink to="/upload" class="brand">
+        <BarChart3 :size="20" />
+        Budget App
+      </RouterLink>
 
       <div class="nav-links">
         <RouterLink
@@ -16,9 +19,9 @@
         <RouterLink to="/upload" class="nav-link">Upload</RouterLink>
 
         <span class="sync-indicator" :class="syncStatus" :title="syncLabel">
-          <span v-if="syncStatus === 'syncing'" class="spin">↻</span>
-          <span v-else-if="syncStatus === 'synced'">✓</span>
-          <span v-else-if="syncStatus === 'error'">⚠</span>
+          <Loader2 v-if="syncStatus === 'syncing'" :size="15" class="spin" />
+          <Check   v-else-if="syncStatus === 'synced'" :size="15" />
+          <AlertCircle v-else-if="syncStatus === 'error'" :size="15" />
         </span>
       </div>
     </div>
@@ -28,6 +31,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
+import { BarChart3, Loader2, Check, AlertCircle } from 'lucide-vue-next'
 import { useTransactionStore } from '../composables/useTransactionStore.js'
 import { syncStatus } from '../lib/supabase.js'
 
@@ -66,6 +70,9 @@ const syncLabel = computed(() => ({
 }
 
 .brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: 17px;
   font-weight: 800;
   color: var(--text);

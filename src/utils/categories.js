@@ -12,16 +12,16 @@ export const CATEGORIES = {
 }
 
 export const CATEGORY_META = {
-  [CATEGORIES.INCOME]:       { icon: 'TrendingUp',    color: '#43AA8B', bg: '#e2f5ef' },
-  [CATEGORIES.HOUSING]:      { icon: 'Home',          color: '#277DA1', bg: '#dceef7' },
-  [CATEGORIES.FOOD]:         { icon: 'Utensils',      color: '#F8961E', bg: '#fef2de' },
-  [CATEGORIES.TRANSPORT]:    { icon: 'Car',           color: '#577590', bg: '#e2eaf0' },
-  [CATEGORIES.SHOPPING]:     { icon: 'ShoppingCart',  color: '#F94144', bg: '#feecec' },
-  [CATEGORIES.ENTERTAINMENT]:{ icon: 'Film',          color: '#F3722C', bg: '#feeee5' },
-  [CATEGORIES.HEALTHCARE]:   { icon: 'Stethoscope',   color: '#4D908E', bg: '#e1f0ef' },
-  [CATEGORIES.UTILITIES]:    { icon: 'Zap',           color: '#F9C74F', bg: '#fef6dd' },
-  [CATEGORIES.TRANSFER]:     { icon: 'ArrowLeftRight',color: '#90BE6D', bg: '#edf6e4' },
-  [CATEGORIES.UNCATEGORIZED]:{ icon: 'HelpCircle',    color: '#8faab8', bg: '#edede9' },
+  [CATEGORIES.INCOME]:       { icon: 'TrendingUp',    color: '#16a34a', bg: '#dcfce7' },
+  [CATEGORIES.HOUSING]:      { icon: 'Home',          color: '#2563eb', bg: '#eff6ff' },
+  [CATEGORIES.FOOD]:         { icon: 'Utensils',      color: '#d97706', bg: '#fef3c7' },
+  [CATEGORIES.TRANSPORT]:    { icon: 'Car',           color: '#7c3aed', bg: '#f5f3ff' },
+  [CATEGORIES.SHOPPING]:     { icon: 'ShoppingCart',  color: '#dc2626', bg: '#fee2e2' },
+  [CATEGORIES.ENTERTAINMENT]:{ icon: 'Film',          color: '#0891b2', bg: '#ecfeff' },
+  [CATEGORIES.HEALTHCARE]:   { icon: 'Stethoscope',   color: '#059669', bg: '#d1fae5' },
+  [CATEGORIES.UTILITIES]:    { icon: 'Zap',           color: '#ca8a04', bg: '#fef9c3' },
+  [CATEGORIES.TRANSFER]:     { icon: 'ArrowLeftRight',color: '#6b7280', bg: '#f3f4f6' },
+  [CATEGORIES.UNCATEGORIZED]:{ icon: 'HelpCircle',    color: '#9ca3af', bg: '#f9fafb' },
 }
 
 export const ICON_OPTIONS = [

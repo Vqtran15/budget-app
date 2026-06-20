@@ -3,10 +3,10 @@ import { reactive } from 'vue'
 const STORAGE_KEY = 'budget-chart-colors'
 
 const DEFAULT = {
-  barIncome:    '#43AA8B',
-  barExpense:   '#F94144',
-  lineBalance:  '#277DA1',
-  lineFill:     '#dceef7',
+  barIncome:    '#16a34a',
+  barExpense:   '#dc2626',
+  lineBalance:  '#2563eb',
+  lineFill:     '#bfdbfe',
   categories:   {},
 }
 

@@ -98,7 +98,7 @@ function buildChart() {
         pointRadius: 4,
         pointHoverRadius: 6,
         pointBackgroundColor: lineColor,
-        pointBorderColor: '#f8f8f5',
+        pointBorderColor: '#ffffff',
         pointBorderWidth: 2,
         tension: 0.4,
         fill: true,
@@ -118,7 +118,7 @@ function buildChart() {
       scales: {
         x: { grid: { display: false }, ticks: { font: { size: 11 } } },
         y: {
-          grid: { color: '#d8d8d3' },
+          grid: { color: '#e5e7eb' },
           ticks: {
             font: { size: 11 },
             callback: v => '$' + v.toLocaleString(),
