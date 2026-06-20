@@ -1,0 +1,74 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --surface-hover: #f8fafc;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --text-xs: #94a3b8;
+  --accent: #6366f1;
+  --accent-light: #eef2ff;
+  --green: #10b981;
+  --green-light: #d1fae5;
+  --red: #ef4444;
+  --red-light: #fee2e2;
+  --yellow: #f59e0b;
+  --yellow-light: #fef3c7;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.07), 0 2px 4px -1px rgba(0,0,0,.04);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+select {
+  font-family: inherit;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+/* ── Page transitions ── */
+.page-enter-active {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.page-leave-active {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* ── Stagger helpers ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.fade-up           { animation: fadeUp 0.35s ease both; }
+.fade-up-1         { animation: fadeUp 0.35s ease 0.04s  both; }
+.fade-up-2         { animation: fadeUp 0.35s ease 0.10s  both; }
+.fade-up-3         { animation: fadeUp 0.35s ease 0.16s  both; }
+.fade-up-4         { animation: fadeUp 0.35s ease 0.22s  both; }
+.fade-up-5         { animation: fadeUp 0.35s ease 0.28s  both; }
