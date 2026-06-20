@@ -9,8 +9,11 @@ const history  = ref(loadLocal())
 const { userId } = useAuth()
 
 function loadLocal() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]') }
-  catch { return [] }
+  try {
+    const entries = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')
+    // Strip legacy `transactions` blob stored in older versions
+    return entries.map(({ transactions: _t, ...rest }) => rest)
+  } catch { return [] }
 }
 
 function saveLocal() {
@@ -26,7 +29,6 @@ function toRow(entry) {
     file_name:         entry.fileName,
     uploaded_at:       entry.uploadedAt,
     transaction_count: entry.transactionCount,
-    transactions:      entry.transactions,
     parse_warning:     entry.parseWarning,
     ai_parsed:         entry.aiParsed,
   }
@@ -38,7 +40,6 @@ function fromRow(row) {
     fileName:         row.file_name,
     uploadedAt:       row.uploaded_at,
     transactionCount: row.transaction_count,
-    transactions:     row.transactions,
     parseWarning:     row.parse_warning,
     aiParsed:         row.ai_parsed,
   }
@@ -75,7 +76,6 @@ export function useUploadHistory() {
       fileName,
       uploadedAt:       new Date().toISOString(),
       transactionCount: transactions.length,
-      transactions,
       parseWarning,
       aiParsed,
     }

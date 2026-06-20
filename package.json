@@ -9,14 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.105.0",
     "@supabase/supabase-js": "^2.108.2",
     "chart.js": "^4.5.1",
+    "exceljs": "^4.4.0",
     "lucide-vue-next": "^1.0.0",
-    "pdfjs-dist": "^4.4.168",
     "vue": "^3.4.31",
-    "vue-router": "^5.1.0",
-    "xlsx": "^0.18.5"
+    "vue-router": "^5.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.2",

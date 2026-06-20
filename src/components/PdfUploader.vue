@@ -15,7 +15,7 @@
         <span class="tag">Excel</span>
         <span class="tag">TXT</span>
       </div>
-      <input ref="fileInput" type="file" accept=".pdf,.csv,.txt,.xlsx,.xls" hidden @change="onInputChange" />
+      <input ref="fileInput" type="file" accept=".csv,.txt,.xlsx,.xls" hidden @change="onInputChange" />
     </div>
 
     <div v-if="loading" class="status loading">
@@ -40,7 +40,7 @@ const emit = defineEmits(['file-selected'])
 const fileInput = ref(null)
 const dragging = ref(false)
 
-const ACCEPTED = ['.pdf', '.csv', '.txt', '.xlsx', '.xls']
+const ACCEPTED = ['.csv', '.txt', '.xlsx', '.xls']
 
 function onDrop(e) {
   dragging.value = false
