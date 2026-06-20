@@ -23,18 +23,22 @@
       </div>
     </button>
 
+    <Transition name="collapse">
     <div v-show="!collapsed" class="tx-list">
-      <TransactionCard
-        v-for="tx in transactions"
-        :key="tx.id"
-        :tx="tx"
-        :all-categories="allCategories"
-        :selected="selectedIds.has(tx.id)"
-        @update-category="(id, cat) => emit('update-category', id, cat)"
-        @remove="id => emit('remove', id)"
-        @toggle-select="id => emit('toggle-select', id)"
-      />
+      <TransitionGroup name="tx" tag="div" class="tx-inner">
+        <TransactionCard
+          v-for="tx in transactions"
+          :key="tx.id"
+          :tx="tx"
+          :all-categories="allCategories"
+          :selected="selectedIds.has(tx.id)"
+          @update-category="(id, cat) => emit('update-category', id, cat)"
+          @remove="id => emit('remove', id)"
+          @toggle-select="id => emit('toggle-select', id)"
+        />
+      </TransitionGroup>
     </div>
+    </Transition>
   </div>
 </template>
 
@@ -152,9 +156,39 @@ const totalClass = computed(() => {
 .chevron.rotated { transform: rotate(90deg); }
 
 .tx-list {
+  padding: 0 12px 12px;
+}
+
+.tx-inner {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 0 12px 12px;
+  position: relative;
 }
+
+/* enter — new manual transactions sliding in */
+.tx-enter-active { transition: opacity .2s ease, transform .2s ease; }
+.tx-enter-from   { opacity: 0; transform: translateX(-10px); }
+
+/* leave — removal slides out and collapses height */
+.tx-leave-active {
+  transition: opacity .22s ease, transform .22s ease, max-height .25s ease, margin .25s ease;
+  max-height: 80px;
+  overflow: hidden;
+}
+.tx-leave-to {
+  opacity: 0;
+  transform: translateX(16px);
+  max-height: 0;
+  margin-bottom: 0;
+}
+
+/* keep remaining items in place while one leaves */
+.tx-move { transition: transform .25s ease; }
+
+/* section expand/collapse */
+.collapse-enter-active, .collapse-leave-active {
+  transition: opacity .18s ease, transform .18s ease;
+}
+.collapse-enter-from, .collapse-leave-to { opacity: 0; transform: translateY(-4px); }
 </style>

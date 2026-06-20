@@ -1,7 +1,7 @@
 <template>
   <div class="upload-page">
     <div class="hero fade-up">
-      <h1 class="title"><BarChart3 :size="32" class="title-icon" /> Budget App</h1>
+      <h1 class="title"><BarChart3 :size="32" class="title-icon" /> Cash Flow</h1>
       <p class="sub">Import your bank statement — we'll categorize it automatically</p>
     </div>
 
@@ -13,14 +13,28 @@
 
     <Transition name="toast">
       <div v-if="successMsg" class="success-toast">
-        <CheckCircle2 :size="16" />
-        {{ successMsg }}
+        <CheckCircle2 :size="16" class="toast-icon" />
+        <span class="toast-msg">{{ successMsg }}</span>
+        <button v-if="previousState" class="btn-undo" @click="undo">Undo</button>
       </div>
     </Transition>
 
-    <UploadHistory class="fade-up-2" @load="loadFromHistory" />
+    <div v-if="history.length" class="history-wrap fade-up-2">
+      <button class="history-toggle" @click="showHistory = !showHistory">
+        <History :size="14" />
+        Upload History
+        <span class="history-count">{{ history.length }}</span>
+        <ChevronDown :size="14" class="chevron" :class="{ open: showHistory }" />
+      </button>
+      <Transition name="slide">
+        <div v-if="showHistory" class="history-panel">
+          <UploadHistory @removed="onHistoryRemoved" />
+        </div>
+      </Transition>
+    </div>
 
     <!-- AI parse fallback panel -->
+    <Transition name="ai-panel">
     <div v-if="showAiPanel" class="ai-panel">
       <div class="ai-panel-header">
         <Sparkles :size="18" class="ai-icon" />
@@ -57,12 +71,13 @@
 
       <div v-if="aiError" class="ai-error"><AlertTriangle :size="14" /> {{ aiError }}</div>
     </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { BarChart3, CheckCircle2, Sparkles, AlertTriangle } from 'lucide-vue-next'
+import { BarChart3, CheckCircle2, Sparkles, AlertTriangle, History, ChevronDown } from 'lucide-vue-next'
 import PdfUploader from '../components/PdfUploader.vue'
 import UploadHistory from '../components/UploadHistory.vue'
 import { usePdfParser } from '../composables/usePdfParser.js'
@@ -80,7 +95,8 @@ const { parseCsvFile, parseTxtFile } = useCsvParser()
 const { parseExcelFile } = useExcelParser()
 const { categorizeAll } = useCategorizer()
 const store = useTransactionStore()
-const { addEntry } = useUploadHistory()
+const { addEntry, history } = useUploadHistory()
+const showHistory = ref(false)
 
 const loading = ref(false)
 const error = ref('')
@@ -90,10 +106,39 @@ const aiError = ref('')
 const lastFile = ref(null)
 const apiKeyInput = ref(localStorage.getItem('claude-api-key') ?? '')
 const successMsg = ref('')
+const previousState = ref(null)
 let successTimer = null
 
+const BALANCE_PATTERN = /\b(beginning|starting|opening|ending|previous|prior)\s+balance\b/i
+
+function filterBalanceLines(txs) {
+  return txs.filter(tx => !BALANCE_PATTERN.test(tx.description))
+}
+
+function saveSnapshot() {
+  previousState.value = {
+    transactions:  [...store.transactions.value],
+    fileName:      store.fileName.value,
+    parseWarning:  store.parseWarning.value,
+    aiParsed:      store.aiParsed.value,
+  }
+}
+
+function undo() {
+  if (!previousState.value) return
+  const s = previousState.value
+  store.transactions.value = s.transactions
+  store.fileName.value     = s.fileName
+  store.parseWarning.value = s.parseWarning
+  store.aiParsed.value     = s.aiParsed
+  previousState.value      = null
+  clearTimeout(successTimer)
+  successMsg.value = ''
+}
+
 function finalize(parsed, { isAi = false } = {}) {
-  store.transactions.value = categorizeAll(parsed)
+  saveSnapshot()
+  store.transactions.value = categorizeAll(filterBalanceLines(parsed))
   store.aiParsed.value = isAi
 
   const uncat = store.transactions.value.filter(t => t.category === CATEGORIES.UNCATEGORIZED).length
@@ -109,16 +154,10 @@ function finalize(parsed, { isAi = false } = {}) {
   })
 
   clearTimeout(successTimer)
-  successMsg.value = `${store.transactions.value.length} transactions loaded from ${store.fileName.value}`
-  successTimer = setTimeout(() => { successMsg.value = '' }, 3000)
+  successMsg.value = `${store.transactions.value.length} transactions loaded`
+  successTimer = setTimeout(() => { successMsg.value = ''; previousState.value = null }, 8000)
 }
 
-function loadFromHistory(entry) {
-  store.fileName.value = entry.fileName
-  store.transactions.value = entry.transactions
-  store.parseWarning.value = entry.parseWarning
-  store.aiParsed.value = entry.aiParsed
-}
 
 async function handleFile(file) {
   loading.value = true
@@ -169,6 +208,10 @@ async function handleFile(file) {
   }
 
   loading.value = false
+}
+
+function onHistoryRemoved(entry) {
+  if (store.fileName.value === entry.fileName) store.reset()
 }
 
 async function handleAiParse() {
@@ -316,8 +359,93 @@ async function handleAiParse() {
   gap: 8px;
 }
 
+.toast-icon { flex-shrink: 0; }
+.toast-msg  { flex: 1; }
+
+.btn-undo {
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1.5px solid var(--green);
+  background: transparent;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, color .15s;
+  flex-shrink: 0;
+}
+.btn-undo:hover { background: var(--green); color: white; }
+
+.history-wrap {
+  width: 100%;
+  max-width: 520px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.history-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s, color .15s;
+}
+.history-toggle:hover { background: var(--surface-hover); color: var(--text); }
+
+.history-count {
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--bg);
+  color: var(--text-muted);
+  padding: 1px 7px;
+  border-radius: 99px;
+}
+
+.chevron { margin-left: auto; transition: transform .2s; }
+.chevron.open { transform: rotate(180deg); }
+
+.history-panel {
+  border-top: 1px solid var(--border);
+  padding: 0 12px 12px;
+}
+
+.history-panel :deep(.history) {
+  max-width: 100%;
+  margin-top: 12px;
+}
+
+.slide-enter-active, .slide-leave-active {
+  transition: opacity .2s ease, max-height .25s ease;
+  max-height: 600px;
+  overflow: hidden;
+}
+.slide-enter-from, .slide-leave-to { opacity: 0; max-height: 0; }
+
 .toast-enter-active { transition: opacity .3s, transform .3s; }
 .toast-leave-active { transition: opacity .4s, transform .4s; }
 .toast-enter-from  { opacity: 0; transform: translateY(-6px); }
 .toast-leave-to    { opacity: 0; transform: translateY(-6px); }
+
+.ai-panel-enter-active {
+  transition: opacity .25s ease, transform .25s ease, max-height .3s ease;
+  overflow: hidden;
+  max-height: 400px;
+}
+.ai-panel-leave-active {
+  transition: opacity .2s ease, transform .18s ease, max-height .25s ease;
+  overflow: hidden;
+  max-height: 400px;
+}
+.ai-panel-enter-from, .ai-panel-leave-to { opacity: 0; transform: translateY(-8px); max-height: 0; }
 </style>

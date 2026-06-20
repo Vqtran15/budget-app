@@ -17,7 +17,6 @@
         <span class="tag tag-csv">Excel</span>
         <span class="tag tag-csv">TXT</span>
       </div>
-      <p class="drop-hint">PDF: Chase, BofA, Wells Fargo &nbsp;·&nbsp; CSV / Excel / TXT: Capital One &amp; any bank export</p>
       <input ref="fileInput" type="file" accept=".pdf,.csv,.txt,.xlsx,.xls" hidden @change="onInputChange" />
     </div>
 
@@ -114,7 +113,6 @@ function onInputChange(e) {
   border-color: #b5d8cb;
 }
 
-.drop-hint { font-size: 12px; color: var(--text-xs); }
 
 .status {
   display: flex;

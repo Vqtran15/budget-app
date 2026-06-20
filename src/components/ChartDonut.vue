@@ -7,6 +7,7 @@
       </button>
     </div>
 
+    <Transition name="panel">
     <div v-if="showSettings && hasData" class="settings-panel">
       <p class="settings-label">Category Colors</p>
       <div class="color-rows">
@@ -22,6 +23,7 @@
         </label>
       </div>
     </div>
+    </Transition>
 
     <div v-if="hasData" class="canvas-wrap">
       <canvas ref="canvasRef"></canvas>
@@ -208,4 +210,11 @@ onBeforeUnmount(() => chart?.destroy())
   text-align: center;
   padding: 32px 0;
 }
+
+.panel-enter-active, .panel-leave-active {
+  transition: opacity .18s ease, transform .18s ease, max-height .2s ease;
+  overflow: hidden;
+  max-height: 400px;
+}
+.panel-enter-from, .panel-leave-to { opacity: 0; transform: translateY(-6px); max-height: 0; }
 </style>

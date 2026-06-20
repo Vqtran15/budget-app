@@ -1,10 +1,11 @@
 <template>
   <Teleport to="body">
-    <div class="overlay" @click.self="emit('close')">
+    <Transition name="modal-anim" appear @after-leave="emit('close')">
+    <div v-if="visible" class="overlay" @click.self="close">
       <div class="modal">
         <div class="modal-header">
           <h2 class="modal-title">New Category</h2>
-          <button class="btn-close" @click="emit('close')">
+          <button class="btn-close" @click="close">
             <X :size="18" />
           </button>
         </div>
@@ -53,18 +54,19 @@
         </div>
 
         <div class="modal-actions">
-          <button class="btn-cancel" @click="emit('close')">Cancel</button>
+          <button class="btn-cancel" @click="close">Cancel</button>
           <button class="btn-create" :disabled="!canSubmit" @click="submit">
             Create Category
           </button>
         </div>
       </div>
     </div>
+    </Transition>
   </Teleport>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { X } from 'lucide-vue-next'
 import CategoryIcon from './CategoryIcon.vue'
 import { ICON_OPTIONS, COLOR_PALETTE } from '../utils/categories.js'
@@ -80,8 +82,16 @@ const name         = ref('')
 const selectedIcon = ref('Star')
 const selectedColor= ref(COLOR_PALETTE[0])
 const nameError    = ref('')
+const visible      = ref(false)
 
-onMounted(() => nameInput.value?.focus())
+onMounted(async () => {
+  await nextTick()
+  visible.value = true
+  await nextTick()
+  nameInput.value?.focus()
+})
+
+function close() { visible.value = false }
 
 const takenNames = computed(() => [
   ...ALL_CATEGORIES.map(c => c.toLowerCase()),
@@ -263,4 +273,18 @@ function submit() {
 }
 .btn-create:hover:not(:disabled) { background: var(--accent-hover); }
 .btn-create:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── Modal animation ── */
+.modal-anim-enter-active { transition: opacity .2s ease; }
+.modal-anim-enter-from   { opacity: 0; }
+.modal-anim-leave-active { transition: opacity .22s ease; }
+.modal-anim-leave-to     { opacity: 0; }
+
+.modal-anim-enter-active .modal {
+  transition: transform .32s cubic-bezier(.34, 1.56, .64, 1), opacity .2s ease;
+}
+.modal-anim-enter-from .modal { transform: translateY(28px) scale(.95); opacity: 0; }
+
+.modal-anim-leave-active .modal { transition: transform .2s ease, opacity .2s ease; }
+.modal-anim-leave-to .modal     { transform: translateY(12px) scale(.97); opacity: 0; }
 </style>

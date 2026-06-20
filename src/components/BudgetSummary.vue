@@ -22,15 +22,9 @@ const props = defineProps({
   transactions: { type: Array, default: () => [] },
 })
 
-const income = computed(() =>
-  props.transactions.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0)
-)
-
-const expenses = computed(() =>
-  props.transactions.filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0)
-)
-
-const net = computed(() => income.value - expenses.value)
+const income   = computed(() => props.transactions.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0))
+const expenses = computed(() => props.transactions.filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0))
+const net      = computed(() => income.value - expenses.value)
 
 function fmt(n) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Math.abs(n))
@@ -42,7 +36,7 @@ function fmt(n) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .stat {
@@ -68,7 +62,7 @@ function fmt(n) {
   font-weight: 700;
 }
 
-.income  .value { color: var(--green); }
+.income   .value { color: var(--green); }
 .expenses .value { color: var(--red); }
 .net.positive .value { color: var(--green); }
 .net.negative .value { color: var(--red); }

@@ -3,17 +3,13 @@
     <div class="navbar-inner">
       <RouterLink to="/upload" class="brand">
         <BarChart3 :size="20" />
-        Budget App
+        Cash Flow
       </RouterLink>
 
       <div class="nav-links">
-        <RouterLink
-          to="/dashboard"
-          class="nav-link"
-          :class="{ disabled: !hasTransactions }"
-          @click.prevent="hasTransactions ? router.push('/dashboard') : null"
-        >
-          Dashboard
+        <RouterLink to="/dashboard" class="nav-link">Dashboard</RouterLink>
+        <RouterLink to="/transactions" class="nav-link">
+          Transactions
           <span v-if="hasTransactions" class="tx-count">{{ transactionCount }}</span>
         </RouterLink>
         <RouterLink to="/upload" class="nav-link">Upload</RouterLink>
@@ -30,12 +26,11 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { BarChart3, Loader2, Check, AlertCircle } from 'lucide-vue-next'
 import { useTransactionStore } from '../composables/useTransactionStore.js'
 import { syncStatus } from '../lib/supabase.js'
 
-const router = useRouter()
 const store = useTransactionStore()
 
 const hasTransactions = computed(() => store.transactions.value.length > 0)
@@ -110,11 +105,6 @@ const syncLabel = computed(() => ({
   font-weight: 600;
 }
 
-.nav-link.disabled {
-  opacity: .4;
-  cursor: not-allowed;
-  pointer-events: none;
-}
 
 .tx-count {
   font-size: 11px;
