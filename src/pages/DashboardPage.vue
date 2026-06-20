@@ -16,6 +16,8 @@
       <ChartBar   :transactions="filtered" />
     </div>
 
+    <ChartLine class="fade-up-2 line-chart" :transactions="filtered" />
+
     <MonthlyBreakdown class="fade-up-3" :transactions="filtered" />
 
     <SearchFilter class="fade-up-4"
@@ -80,6 +82,7 @@ import BudgetSummary     from '../components/BudgetSummary.vue'
 import MonthlyBreakdown  from '../components/MonthlyBreakdown.vue'
 import ChartDonut        from '../components/ChartDonut.vue'
 import ChartBar          from '../components/ChartBar.vue'
+import ChartLine         from '../components/ChartLine.vue'
 import SearchFilter      from '../components/SearchFilter.vue'
 import CategorySection   from '../components/CategorySection.vue'
 import BulkActionBar     from '../components/BulkActionBar.vue'
@@ -231,6 +234,8 @@ function removeTransaction(id) {
   gap: 16px;
   margin-bottom: 16px;
 }
+
+.line-chart { margin-bottom: 16px; }
 
 @media (max-width: 600px) {
   .charts-grid { grid-template-columns: 1fr; }

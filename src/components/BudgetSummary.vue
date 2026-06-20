@@ -12,10 +12,6 @@
       <span class="label">Net</span>
       <span class="value">{{ net >= 0 ? '+' : '' }}{{ fmt(net) }}</span>
     </div>
-    <div class="stat count">
-      <span class="label">Transactions</span>
-      <span class="value">{{ transactions.length }}</span>
-    </div>
   </div>
 </template>
 
@@ -76,5 +72,4 @@ function fmt(n) {
 .expenses .value { color: var(--red); }
 .net.positive .value { color: var(--green); }
 .net.negative .value { color: var(--red); }
-.count   .value { color: var(--accent); }
 </style>
