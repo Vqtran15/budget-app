@@ -1,29 +1,59 @@
 import { ref } from 'vue'
 import { supabase } from '../lib/supabase.js'
 
-const userId   = ref(null)
+const user      = ref(null)
+const userId    = ref(null)
 const authReady = ref(false)
+const authEvent = ref(null) // 'PASSWORD_RECOVERY'
 
 export function useAuth() {
   async function initAuth() {
-    // Reuse existing session if any
     const { data: { session } } = await supabase.auth.getSession()
+    user.value   = session?.user   ?? null
+    userId.value = session?.user?.id ?? null
 
-    if (session?.user) {
-      userId.value = session.user.id
-    } else {
-      const { data, error } = await supabase.auth.signInAnonymously()
-      if (data?.user) userId.value = data.user.id
-      if (error) console.error('[auth] sign-in error:', error.message)
-    }
-
-    // Keep userId in sync with any future auth changes
-    supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      user.value   = session?.user   ?? null
       userId.value = session?.user?.id ?? null
+      if (event === 'PASSWORD_RECOVERY') authEvent.value = 'PASSWORD_RECOVERY'
+      if (event === 'SIGNED_OUT')        authEvent.value = null
     })
 
     authReady.value = true
   }
 
-  return { userId, authReady, initAuth }
+  async function signIn(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+    return data
+  }
+
+  async function signUp(email, password) {
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) throw error
+    return data
+  }
+
+  async function signOut() {
+    await supabase.auth.signOut()
+    localStorage.clear()
+    window.location.reload()
+  }
+
+  async function sendPasswordReset(email) {
+    const redirectTo = window.location.href.split('#')[0]
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
+    if (error) throw error
+  }
+
+  async function updatePassword(password) {
+    const { error } = await supabase.auth.updateUser({ password })
+    if (error) throw error
+    authEvent.value = null
+  }
+
+  return {
+    user, userId, authReady, authEvent,
+    initAuth, signIn, signUp, signOut, sendPasswordReset, updatePassword,
+  }
 }

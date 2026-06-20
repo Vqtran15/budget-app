@@ -26,7 +26,10 @@
         </select>
         <span v-if="tx.isManual" class="manual-badge" title="Manually categorized">✎</span>
       </div>
-      <button class="btn-remove" title="Remove transaction" @click.stop="emit('remove', tx.id)">✕</button>
+      <div class="action-btns">
+        <button class="btn-split" @click.stop="emit('split', tx)">Split</button>
+        <button class="btn-remove" title="Remove" @click.stop="emit('remove', tx.id)">✕</button>
+      </div>
     </div>
   </div>
 </template>
@@ -50,7 +53,7 @@ const props = defineProps({
   selected:      { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['update-category', 'remove', 'toggle-select'])
+const emit = defineEmits(['update-category', 'remove', 'toggle-select', 'split'])
 
 function fmt(n) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
@@ -141,19 +144,43 @@ function fmt(n) {
 
 .manual-badge { font-size: 11px; color: var(--accent); font-style: italic; }
 
-.btn-remove {
+.action-btns {
+  display: flex;
+  align-items: center;
+  gap: 3px;
   margin-top: 2px;
+  opacity: 0;
+  transition: opacity .15s;
+}
+.tx-card:hover .action-btns { opacity: 1; }
+
+.btn-split {
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.btn-split:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-remove {
   background: none;
   border: none;
   color: var(--text-xs);
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 2px 5px;
   border-radius: 4px;
   line-height: 1;
-  opacity: 0;
-  transition: opacity .15s, color .15s, background .15s;
+  transition: color .15s, background .15s;
 }
-.tx-card:hover .btn-remove { opacity: 1; }
-.btn-remove:hover { color: var(--accent-hover); background: var(--red-light); }
+.btn-remove:hover { color: var(--red); background: var(--red-light); }
 </style>

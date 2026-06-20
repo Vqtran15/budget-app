@@ -13,7 +13,32 @@
         <span class="cat-icon">
           <CategoryIcon :name="meta.icon" :size="18" :color="meta.color" />
         </span>
-        <span class="cat-name">{{ category }}</span>
+        <span v-if="!renaming" class="cat-name">{{ category }}</span>
+        <input
+          v-else
+          ref="renameInput"
+          class="cat-rename-input"
+          v-model="renameValue"
+          @blur="commitRename"
+          @keydown.enter.prevent="commitRename"
+          @keydown.esc.prevent="cancelRename"
+          @click.stop
+        />
+        <template v-if="canEdit && !renaming">
+          <button class="btn-rename" title="Rename" @click.stop="startRename">
+            <Pencil :size="11" />
+          </button>
+          <template v-if="!confirmingDelete">
+            <button class="btn-delete" title="Delete category" @click.stop="confirmingDelete = true">
+              <Trash2 :size="11" />
+            </button>
+          </template>
+          <template v-else>
+            <span class="delete-confirm-label" @click.stop>Delete?</span>
+            <button class="btn-delete-yes" @click.stop="emit('delete', category)">Yes</button>
+            <button class="btn-delete-no"  @click.stop="confirmingDelete = false">No</button>
+          </template>
+        </template>
         <span class="cat-count">{{ transactions.length }}</span>
         <span v-if="category === 'Uncategorized'" class="review-badge">Review needed</span>
       </div>
@@ -35,6 +60,7 @@
           @update-category="(id, cat) => emit('update-category', id, cat)"
           @remove="id => emit('remove', id)"
           @toggle-select="id => emit('toggle-select', id)"
+          @split="tx => emit('split', tx)"
         />
       </TransitionGroup>
     </div>
@@ -43,20 +69,49 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
+import { Pencil, Trash2 } from 'lucide-vue-next'
 import { CATEGORY_META, CATEGORIES } from '../utils/categories.js'
 import { useCustomCategories } from '../composables/useCustomCategories.js'
 import TransactionCard from './TransactionCard.vue'
 import CategoryIcon from './CategoryIcon.vue'
 
 const props = defineProps({
-  category:      { type: String, required: true },
-  transactions:  { type: Array,  required: true },
-  allCategories: { type: Array,  required: true },
-  selectedIds:   { type: Set,    default: () => new Set() },
+  category:      { type: String,  required: true },
+  transactions:  { type: Array,   required: true },
+  allCategories: { type: Array,   required: true },
+  selectedIds:   { type: Set,     default: () => new Set() },
+  canEdit:       { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['update-category', 'remove', 'toggle-select', 'toggle-select-all'])
+const emit = defineEmits(['update-category', 'remove', 'toggle-select', 'toggle-select-all', 'split', 'rename', 'delete'])
+
+const confirmingDelete = ref(false)
+
+const renaming = ref(false)
+const renameValue = ref('')
+const renameInput = ref(null)
+
+async function startRename() {
+  renameValue.value = props.category
+  renaming.value = true
+  await nextTick()
+  renameInput.value?.focus()
+  renameInput.value?.select()
+}
+
+function commitRename() {
+  if (!renaming.value) return
+  renaming.value = false
+  const newName = renameValue.value.trim()
+  if (newName && newName !== props.category) {
+    emit('rename', props.category, newName)
+  }
+}
+
+function cancelRename() {
+  renaming.value = false
+}
 
 const { customMeta } = useCustomCategories()
 const meta = computed(() =>
@@ -122,6 +177,84 @@ const totalClass = computed(() => {
 
 .cat-icon { font-size: 18px; }
 .cat-name { font-size: 15px; font-weight: 600; }
+
+.cat-rename-input {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  border: 1.5px solid var(--accent);
+  border-radius: 6px;
+  padding: 2px 7px;
+  outline: none;
+  width: 160px;
+  font-family: inherit;
+}
+
+.btn-rename {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: none;
+  background: none;
+  color: var(--text-xs);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .15s, color .15s, background .15s;
+  flex-shrink: 0;
+}
+.section-header:hover .btn-rename { opacity: 1; }
+.btn-rename:hover { color: var(--accent); background: var(--accent-light); }
+
+.btn-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: none;
+  background: none;
+  color: var(--text-xs);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .15s, color .15s, background .15s;
+  flex-shrink: 0;
+}
+.section-header:hover .btn-delete { opacity: 1; }
+.btn-delete:hover { color: var(--red); background: var(--red-light); }
+
+.delete-confirm-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--red);
+  white-space: nowrap;
+}
+
+.btn-delete-yes, .btn-delete-no {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.btn-delete-yes {
+  background: var(--red-light);
+  color: var(--red);
+  border-color: var(--red);
+}
+.btn-delete-yes:hover { background: var(--red); color: white; }
+.btn-delete-no {
+  background: none;
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+.btn-delete-no:hover { background: var(--bg); }
 
 .cat-count {
   font-size: 12px;

@@ -37,20 +37,27 @@
         @remove="removeTransaction"
         @toggle-select="toggleSelect"
         @toggle-select-all="toggleSelectAll"
+        @split="tx => splittingTx = tx"
       />
 
-      <CategorySection
-        v-for="cat in sortedCategories"
-        :key="cat"
-        :category="cat"
-        :transactions="grouped[cat]"
-        :all-categories="allCategoriesComputed"
-        :selected-ids="selectedIds"
-        @update-category="updateCategory"
-        @remove="removeTransaction"
-        @toggle-select="toggleSelect"
-        @toggle-select-all="toggleSelectAll"
-      />
+      <TransitionGroup name="cat-section" tag="div" class="sections-group">
+        <CategorySection
+          v-for="cat in sortedCategories"
+          :key="cat"
+          :category="cat"
+          :transactions="grouped[cat] ?? []"
+          :all-categories="allCategoriesComputed"
+          :selected-ids="selectedIds"
+          :can-edit="true"
+          @update-category="updateCategory"
+          @remove="removeTransaction"
+          @toggle-select="toggleSelect"
+          @toggle-select-all="toggleSelectAll"
+          @split="tx => splittingTx = tx"
+          @rename="handleRename"
+          @delete="handleDelete"
+        />
+      </TransitionGroup>
 
       <button class="btn-new-cat" @click="showNewCategory = true">
         + New Category
@@ -67,6 +74,13 @@
       v-if="showAddTransaction"
       @close="showAddTransaction = false"
       @add="addManualTransaction"
+    />
+
+    <SplitTransactionModal
+      v-if="splittingTx"
+      :tx="splittingTx"
+      @close="splittingTx = null"
+      @split="handleSplit"
     />
 
     <BulkActionBar
@@ -86,23 +100,26 @@ import SearchFilter        from '../components/SearchFilter.vue'
 import CategorySection     from '../components/CategorySection.vue'
 import BulkActionBar       from '../components/BulkActionBar.vue'
 import NewCategoryModal    from '../components/NewCategoryModal.vue'
-import AddTransactionModal from '../components/AddTransactionModal.vue'
+import AddTransactionModal   from '../components/AddTransactionModal.vue'
+import SplitTransactionModal from '../components/SplitTransactionModal.vue'
 import { useCategorizer }       from '../composables/useCategorizer.js'
 import { useMerchantMemory }    from '../composables/useMerchantMemory.js'
 import { useTransactionFilter } from '../composables/useTransactionFilter.js'
 import { useTransactionStore }  from '../composables/useTransactionStore.js'
 import { useCustomCategories }  from '../composables/useCustomCategories.js'
-import { ALL_CATEGORIES, CATEGORIES } from '../utils/categories.js'
+import { ALL_CATEGORIES, CATEGORIES, CATEGORY_META } from '../utils/categories.js'
 
 const store = useTransactionStore()
 const { recategorize } = useCategorizer()
 const { learn }        = useMerchantMemory()
-const { customCategoryNames, customCategories } = useCustomCategories()
+const { customCategoryNames, customCategories, hiddenBuiltins, addCategory, renameCategory, removeCategory, hideBuiltin } = useCustomCategories()
 
 const showNewCategory    = ref(false)
 const showAddTransaction = ref(false)
+const splittingTx        = ref(null)
 
-const allCategoriesComputed = computed(() => [...ALL_CATEGORIES, ...customCategoryNames.value])
+const visibleBuiltins       = computed(() => ALL_CATEGORIES.filter(cat => !hiddenBuiltins.value.includes(cat)))
+const allCategoriesComputed = computed(() => [...visibleBuiltins.value, ...customCategoryNames.value])
 
 const { search, dateFrom, dateTo, hasFilters, filtered, clear: clearFilters } =
   useTransactionFilter(store.transactions)
@@ -177,6 +194,36 @@ function removeTransaction(id) {
 function addManualTransaction(tx) {
   store.transactions.value = [tx, ...store.transactions.value]
   showAddTransaction.value = false
+}
+
+function handleRename(oldName, newName) {
+  if (customCategoryNames.value.includes(oldName)) {
+    if (!renameCategory(oldName, newName)) return
+  } else {
+    const meta = CATEGORY_META[oldName] ?? { icon: 'HelpCircle', color: '#8faab8', bg: '#edede9' }
+    if (!addCategory({ name: newName, icon: meta.icon, color: meta.color, bg: meta.bg })) return
+    hideBuiltin(oldName)
+  }
+  store.transactions.value = store.transactions.value.map(tx =>
+    tx.category === oldName ? { ...tx, category: newName } : tx
+  )
+}
+
+function handleDelete(catName) {
+  if (customCategoryNames.value.includes(catName)) removeCategory(catName)
+  else hideBuiltin(catName)
+  store.transactions.value = store.transactions.value.map(tx =>
+    tx.category === catName ? { ...tx, category: CATEGORIES.UNCATEGORIZED, isManual: false } : tx
+  )
+}
+
+function handleSplit({ originalId, transactions }) {
+  const idx = store.transactions.value.findIndex(t => t.id === originalId)
+  if (idx === -1) return
+  const updated = [...store.transactions.value]
+  updated.splice(idx, 1, ...transactions)
+  store.transactions.value = updated
+  splittingTx.value = null
 }
 </script>
 
@@ -264,5 +311,21 @@ function addManualTransaction(tx) {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-light);
+}
+
+.cat-section-leave-active {
+  transition: opacity .25s ease, transform .25s ease, max-height .3s ease, margin-bottom .3s ease;
+  max-height: 2000px;
+  overflow: hidden;
+  position: relative;
+}
+.cat-section-leave-to {
+  opacity: 0;
+  transform: translateX(24px);
+  max-height: 0 !important;
+  margin-bottom: 0 !important;
+}
+.cat-section-move {
+  transition: transform .3s ease;
 }
 </style>

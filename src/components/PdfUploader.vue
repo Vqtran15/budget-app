@@ -8,14 +8,12 @@
       @drop.prevent="onDrop"
       @click="fileInput.click()"
     >
-      <div class="drop-icon">📄</div>
       <p class="drop-title">Drop your bank statement here</p>
       <p class="drop-sub">or click to browse</p>
       <div class="format-tags">
-        <span class="tag">PDF</span>
-        <span class="tag tag-csv">CSV</span>
-        <span class="tag tag-csv">Excel</span>
-        <span class="tag tag-csv">TXT</span>
+        <span class="tag">CSV</span>
+        <span class="tag">Excel</span>
+        <span class="tag">TXT</span>
       </div>
       <input ref="fileInput" type="file" accept=".pdf,.csv,.txt,.xlsx,.xls" hidden @change="onInputChange" />
     </div>
@@ -85,7 +83,6 @@ function onInputChange(e) {
   background: var(--accent-light);
 }
 
-.drop-icon { font-size: 48px; margin-bottom: 12px; }
 .drop-title { font-size: 18px; font-weight: 600; color: var(--text); }
 .drop-sub { color: var(--text-muted); margin: 4px 0 12px; }
 
@@ -93,7 +90,6 @@ function onInputChange(e) {
   display: flex;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 12px;
 }
 
 .tag {
@@ -102,15 +98,9 @@ function onInputChange(e) {
   letter-spacing: .04em;
   padding: 2px 10px;
   border-radius: 99px;
-  background: var(--accent-light);
-  color: var(--accent);
-  border: 1px solid var(--border);
-}
-
-.tag-csv {
   background: var(--green-light);
   color: #5a9178;
-  border-color: #b5d8cb;
+  border: 1px solid #b5d8cb;
 }
 
 
