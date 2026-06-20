@@ -324,4 +324,15 @@ const totalClass = computed(() => {
   transition: opacity .18s ease, transform .18s ease;
 }
 .collapse-enter-from, .collapse-leave-to { opacity: 0; transform: translateY(-4px); }
+
+@media (max-width: 640px) {
+  .section-header      { padding: 11px 12px; }
+  .header-left         { gap: 6px; }
+  .cat-name            { font-size: 14px; }
+  .cat-total           { font-size: 13px; }
+  .review-badge        { display: none; }
+  .cat-rename-input    { width: 120px; font-size: 13px; }
+  .btn-rename, .btn-delete { opacity: 1; }
+  .tx-list             { padding: 0 8px 8px; }
+}
 </style>

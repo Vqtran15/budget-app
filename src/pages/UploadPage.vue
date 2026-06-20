@@ -448,4 +448,11 @@ async function handleAiParse() {
   max-height: 400px;
 }
 .ai-panel-enter-from, .ai-panel-leave-to { opacity: 0; transform: translateY(-8px); max-height: 0; }
+
+@media (max-width: 640px) {
+  .upload-page  { padding: 24px 0 48px; }
+  .title        { font-size: 24px; gap: 8px; }
+  .ai-key-row   { flex-direction: column; }
+  .btn-ai       { width: 100%; justify-content: center; }
+}
 </style>

@@ -431,4 +431,9 @@ async function handleReset() {
 .form-slide-leave-to     { opacity: 0; transform: translateY(-6px); }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 640px) {
+  .auth-card { padding: 28px 24px 24px; border-radius: 16px; }
+  .form-title { font-size: 20px; }
+}
 </style>

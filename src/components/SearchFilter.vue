@@ -131,4 +131,12 @@ function clear() { emit('clear') }
   transition: color .15s, border-color .15s;
 }
 .btn-clear-all:hover { color: var(--accent-hover); border-color: var(--accent); }
+
+@media (max-width: 640px) {
+  .search-filter { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 12px; }
+  .search-wrap   { min-width: 0; }
+  .date-wrap     { justify-content: space-between; }
+  .date-input    { flex: 1; min-width: 0; font-size: 11px; }
+  .right         { margin-left: 0; justify-content: space-between; }
+}
 </style>

@@ -183,4 +183,12 @@ function fmt(n) {
   transition: color .15s, background .15s;
 }
 .btn-remove:hover { color: var(--red); background: var(--red-light); }
+
+@media (max-width: 640px) {
+  .tx-card         { padding: 9px 10px; gap: 7px; }
+  .tx-checkbox     { opacity: 1; }
+  .action-btns     { opacity: 1; }
+  .category-select { max-width: 110px; font-size: 10px; padding: 2px 4px; }
+  .tx-amount       { font-size: 13px; }
+}
 </style>

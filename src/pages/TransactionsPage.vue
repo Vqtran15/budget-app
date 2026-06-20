@@ -328,4 +328,8 @@ function handleSplit({ originalId, transactions }) {
 .cat-section-move {
   transition: transform .3s ease;
 }
+
+@media (max-width: 640px) {
+  .page-title { font-size: 22px; }
+}
 </style>

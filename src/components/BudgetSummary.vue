@@ -66,4 +66,11 @@ function fmt(n) {
 .expenses .value { color: var(--red); }
 .net.positive .value { color: var(--green); }
 .net.negative .value { color: var(--red); }
+
+@media (max-width: 640px) {
+  .summary { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat    { padding: 14px 10px; gap: 3px; }
+  .label   { font-size: 10px; }
+  .value   { font-size: 17px; }
+}
 </style>

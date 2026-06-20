@@ -228,7 +228,13 @@ const periodFiltered = computed(() => {
 
 .line-chart { margin-bottom: 16px; }
 
-@media (max-width: 600px) {
-  .charts-grid { grid-template-columns: 1fr; }
+@media (max-width: 640px) {
+  .charts-grid        { grid-template-columns: 1fr; }
+  .dash-title         { font-size: 22px; }
+  .period-bar         { flex-direction: column; align-items: stretch; gap: 8px; }
+  .period-options     { justify-content: space-between; }
+  .period-btn         { flex: 1; text-align: center; padding: 5px 4px; font-size: 12px; }
+  .date-inputs        { justify-content: center; }
+  .date-input         { flex: 1; min-width: 0; }
 }
 </style>

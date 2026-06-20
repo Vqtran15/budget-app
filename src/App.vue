@@ -75,4 +75,10 @@ onMounted(() => initAuth())
   margin: 0 auto;
   padding: 36px 20px 64px;
 }
+
+@media (max-width: 640px) {
+  .app {
+    padding: 20px 12px calc(72px + env(safe-area-inset-bottom));
+  }
+}
 </style>

@@ -48,13 +48,32 @@
     </div>
   </nav>
 
+  <!-- Mobile bottom tab bar -->
+  <nav class="bottom-nav">
+    <RouterLink to="/dashboard" class="tab-link">
+      <BarChart3 :size="22" />
+      <span class="tab-label">Dashboard</span>
+    </RouterLink>
+    <RouterLink to="/transactions" class="tab-link">
+      <Receipt :size="22" />
+      <span class="tab-label">
+        Transactions
+        <span v-if="hasTransactions" class="tab-badge">{{ transactionCount }}</span>
+      </span>
+    </RouterLink>
+    <RouterLink to="/upload" class="tab-link">
+      <CloudUpload :size="22" />
+      <span class="tab-label">Upload</span>
+    </RouterLink>
+  </nav>
+
   <ChangePasswordModal v-if="showChangePw" @close="showChangePw = false" />
 </template>
 
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { RouterLink } from 'vue-router'
-import { BarChart3, Loader2, Check, AlertCircle, Settings, KeyRound, LogOut } from 'lucide-vue-next'
+import { BarChart3, Loader2, Check, AlertCircle, Settings, KeyRound, LogOut, Receipt, CloudUpload } from 'lucide-vue-next'
 import { useTransactionStore } from '../composables/useTransactionStore.js'
 import { useAuth } from '../composables/useAuth.js'
 import { syncStatus } from '../lib/supabase.js'
@@ -224,9 +243,7 @@ function openChangePassword() {
   z-index: 200;
 }
 
-.menu-user {
-  padding: 8px 10px 6px;
-}
+.menu-user { padding: 8px 10px 6px; }
 
 .menu-user-email {
   display: block;
@@ -238,11 +255,7 @@ function openChangePassword() {
   white-space: nowrap;
 }
 
-.menu-divider {
-  height: 1px;
-  background: var(--border);
-  margin: 4px 0;
-}
+.menu-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
 .menu-item {
   display: flex;
@@ -271,6 +284,71 @@ function openChangePassword() {
 .menu-leave-active { transition: opacity .12s ease, transform .12s ease; }
 .menu-enter-from   { opacity: 0; transform: translateY(-6px) scale(.97); }
 .menu-leave-to     { opacity: 0; transform: translateY(-4px) scale(.98); }
+
+/* ── Mobile bottom tab bar ────────────────────────────────────────────────── */
+
+.bottom-nav {
+  display: none;
+}
+
+.tab-link {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 500;
+  transition: color .15s;
+  position: relative;
+}
+.tab-link.router-link-active { color: var(--accent); }
+
+.tab-label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 15px;
+  background: var(--accent);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 99px;
+  padding: 0 4px;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .nav-link        { display: none; }
+  .sync-indicator  { display: none; }
+  .cog-email       { display: none; }
+  .btn-cog         { padding: 0 8px; border: none; background: none; }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -1px 8px rgba(30, 45, 61, .06);
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
 
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
