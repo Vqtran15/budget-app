@@ -96,7 +96,16 @@ function undo() {
 
 function finalize(parsed, { isAi = false } = {}) {
   saveSnapshot()
-  store.transactions.value = categorizeAll(filterBalanceLines(parsed))
+
+  const incoming = categorizeAll(filterBalanceLines(parsed))
+
+  // Merge with existing — skip rows already present by date+description+amount
+  const existingKeys = new Set(
+    store.transactions.value.map(t => `${t.date}|${t.description}|${t.amount}`)
+  )
+  const toAdd = incoming.filter(t => !existingKeys.has(`${t.date}|${t.description}|${t.amount}`))
+
+  store.transactions.value = [...store.transactions.value, ...toAdd]
   store.aiParsed.value = isAi
 
   const uncat = store.transactions.value.filter(t => t.category === CATEGORIES.UNCATEGORIZED).length
@@ -112,7 +121,9 @@ function finalize(parsed, { isAi = false } = {}) {
   })
 
   clearTimeout(successTimer)
-  successMsg.value = `${store.transactions.value.length} transactions loaded`
+  successMsg.value = toAdd.length
+    ? `${toAdd.length} transactions added (${store.transactions.value.length} total)`
+    : 'No new transactions — file already imported'
   successTimer = setTimeout(() => { successMsg.value = ''; previousState.value = null }, 8000)
 }
 
@@ -159,8 +170,8 @@ async function handleFile(file) {
   loading.value = false
 }
 
-function onHistoryRemoved(entry) {
-  if (store.fileName.value === entry.fileName) store.reset()
+function onHistoryRemoved(_entry) {
+  // Transactions are merged across files — use Start Over to clear all data
 }
 
 async function confirmReset() {
