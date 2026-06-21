@@ -2,7 +2,16 @@
 export function parseRows(rows) {
   if (rows.length < 2) return []
 
-  const headers = rows[0].map(h => String(h ?? '').toLowerCase().replace(/[^a-z0-9]/g, ''))
+  // Some banks (e.g. BofA) prepend a summary block before the real header row
+  let headerRowIdx = 0
+  for (let i = 0; i < Math.min(rows.length - 1, 10); i++) {
+    const lower = rows[i].map(h => String(h ?? '').toLowerCase().replace(/[^a-z0-9]/g, ''))
+    const hasDate = lower.some(h => h === 'date' || h === 'transactiondate' || h === 'posteddate')
+    const hasAmt  = lower.some(h => h.includes('amount') || h.includes('debit') || h.includes('credit'))
+    if (hasDate && hasAmt) { headerRowIdx = i; break }
+  }
+
+  const headers = rows[headerRowIdx].map(h => String(h ?? '').toLowerCase().replace(/[^a-z0-9]/g, ''))
 
   function col(...names) {
     for (const name of names) {
@@ -22,7 +31,7 @@ export function parseRows(rows) {
 
   const transactions = []
 
-  for (let i = 1; i < rows.length; i++) {
+  for (let i = headerRowIdx + 1; i < rows.length; i++) {
     const row = rows[i]
     if (!row || row.every(c => !String(c ?? '').trim())) continue
 
