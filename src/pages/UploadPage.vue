@@ -19,6 +19,12 @@
       </div>
     </Transition>
 
+    <div v-if="store.transactions.value.length" class="reset-wrap fade-up-2">
+      <button class="btn-reset" @click="confirmReset">
+        <Trash2 :size="13" /> Start over
+      </button>
+    </div>
+
     <div v-if="history.length" class="history-wrap fade-up-2">
       <button class="history-toggle" @click="showHistory = !showHistory">
         <History :size="14" />
@@ -38,7 +44,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { BarChart3, CheckCircle2, History, ChevronDown } from 'lucide-vue-next'
+import { BarChart3, CheckCircle2, History, ChevronDown, Trash2 } from 'lucide-vue-next'
 import PdfUploader from '../components/PdfUploader.vue'
 import UploadHistory from '../components/UploadHistory.vue'
 import { useCsvParser } from '../composables/useCsvParser.js'
@@ -52,7 +58,7 @@ const { parseCsvFile, parseTxtFile } = useCsvParser()
 const { parseExcelFile } = useExcelParser()
 const { categorizeAll } = useCategorizer()
 const store = useTransactionStore()
-const { addEntry, history } = useUploadHistory()
+const { addEntry, clearHistory, history } = useUploadHistory()
 const showHistory = ref(false)
 
 const loading = ref(false)
@@ -156,6 +162,11 @@ async function handleFile(file) {
 function onHistoryRemoved(entry) {
   if (store.fileName.value === entry.fileName) store.reset()
 }
+
+async function confirmReset() {
+  if (!confirm('Delete all transactions and upload history? This cannot be undone.')) return
+  await Promise.all([store.reset(), clearHistory()])
+}
 </script>
 
 <style scoped>
@@ -222,6 +233,33 @@ function onHistoryRemoved(entry) {
   flex-shrink: 0;
 }
 .btn-undo:hover { background: var(--green); color: white; }
+
+.reset-wrap {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-reset {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.btn-reset:hover {
+  background: var(--red-light, #fef2f2);
+  color: var(--red, #ef4444);
+  border-color: var(--red, #ef4444);
+}
 
 .history-wrap {
   width: 100%;
