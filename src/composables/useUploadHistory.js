@@ -8,6 +8,10 @@ const MAX_ENTRIES = 10
 const history  = ref(loadLocal())
 const { userId } = useAuth()
 
+window.addEventListener('storage', (e) => {
+  if (e.key === STORAGE_KEY) history.value = loadLocal()
+})
+
 function loadLocal() {
   try {
     const entries = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')

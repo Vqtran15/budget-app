@@ -93,10 +93,9 @@ export function useCustomCategories() {
         .from('user_settings')
         .select('custom_categories, hidden_builtins')
         .eq('user_id', userId.value)
-        .single()
+        .maybeSingle()
 
-      // PGRST116 = no rows found — first time user, nothing to restore
-      if (error && error.code !== 'PGRST116') throw error
+      if (error) throw error
 
       if (data) {
         if (data.custom_categories?.length) {
