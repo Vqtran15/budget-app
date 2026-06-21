@@ -61,10 +61,10 @@ const chartData = computed(() => {
     if (tx.amount >= 0) continue
     const parsed = parseMonthYear(tx.date)
     if (!parsed) continue
-    const prev = map.get(parsed.key) ?? { label: parsed.label, expenses: 0 }
-    map.set(parsed.key, { label: parsed.label, expenses: prev.expenses + Math.abs(tx.amount) })
+    const prev = map.get(parsed.key) ?? { key: parsed.key, label: parsed.label, expenses: 0 }
+    map.set(parsed.key, { key: parsed.key, label: parsed.label, expenses: prev.expenses + Math.abs(tx.amount) })
   }
-  const rows = [...map.values()].sort((a, b) => a.label < b.label ? -1 : 1)
+  const rows = [...map.values()].sort((a, b) => a.key < b.key ? -1 : 1)
   return {
     labels:   rows.map(r => r.label),
     expenses: rows.map(r => parseFloat(r.expenses.toFixed(2))),
